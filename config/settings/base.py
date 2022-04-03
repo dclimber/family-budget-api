@@ -111,6 +111,9 @@ STATIC_ROOT = BASE_DIR / '..' / '..' / 'static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+FIXTURE_DIR = BASE_DIR / '..' / 'fixtures'
+FIXTURE_DIRS = [FIXTURE_DIR]
+
 # REST_FRAMEWORK
 PAGE_SIZE = config('PAGE_SIZE', 6)
 

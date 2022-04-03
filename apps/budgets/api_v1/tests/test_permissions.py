@@ -51,7 +51,7 @@ class TestOwnerOfBudgetPermission:
         budget = Budget(owner=user1, name='test')
         income = Income(budget=budget, name='income', amount='10')
         urls = (
-            ('update-income', income),
+            ('income-detail', income),
         )
         unsafe_methods = (
             api_rf.post,

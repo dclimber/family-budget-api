@@ -66,3 +66,9 @@ class BudgetRetrieveCreateDeleteSerializer(serializers.ModelSerializer):
             ]
         Expense.objects.bulk_create(expenses)
         return budget
+
+
+class IncomeCreateDeleteUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'budget', 'name', 'amount')
+        model = Income

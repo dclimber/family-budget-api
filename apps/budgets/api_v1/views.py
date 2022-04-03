@@ -1,6 +1,6 @@
-from rest_framework.generics import UpdateAPIView
 from rest_framework.mixins import (
     CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin,
+    UpdateModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -9,7 +9,7 @@ from ..models import Budget, Income
 from .permissions import IsOwnerOfBudget, IsOwnerOrReadOnly
 from .serializers import (
     BudgetListOutSerializer, BudgetRetrieveCreateDeleteSerializer,
-    IncomeRetrieveCreateDeleteSerializer,
+    IncomeCreateDeleteUpdateSerializer,
 )
 
 
@@ -39,7 +39,10 @@ class BudgetListCreateDestroyViewSet(
         serializer.save(owner=self.request.user)
 
 
-class UpdateIncomeView(UpdateAPIView):
+class CreateUpdateDestroyIncomeViewSet(
+    CreateModelMixin, DestroyModelMixin, 
+    UpdateModelMixin, GenericViewSet
+):
     permission_classes = [IsAuthenticated, IsOwnerOfBudget]
-    serializer_class = IncomeRetrieveCreateDeleteSerializer
     queryset = Income.objects.all().select_related('budget')
+    serializer_class = IncomeCreateDeleteUpdateSerializer

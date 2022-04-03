@@ -201,9 +201,10 @@ class TestIncomeUpdateView:
         income = budget.incomes.first()
 
         updated_income_data['id'] = income.id
+        updated_income_data['budget'] = str(budget.id)
 
         response = api_client.put(
-            reverse('update-income', args=(income.id,)),
+            reverse('income-detail', args=(income.id,)),
             data=updated_income_data
         )
 

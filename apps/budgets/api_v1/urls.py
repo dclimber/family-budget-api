@@ -1,12 +1,14 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import BudgetListCreateDestroyViewSet, UpdateIncomeView
+from .views import (
+    BudgetListCreateDestroyViewSet, CreateUpdateDestroyIncomeViewSet,
+)
 
 router = DefaultRouter()
 router.register('', BudgetListCreateDestroyViewSet, basename='budget')
+router.register('incomes', CreateUpdateDestroyIncomeViewSet, basename='income')
 
 urlpatterns = [
-    path('incomes/<uuid:pk>', UpdateIncomeView.as_view(), name='update-income'),
     path('', include(router.urls)),
 ]

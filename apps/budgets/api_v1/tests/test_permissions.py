@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from ...models import Budget, Income
+from ...models import Budget, Expense, ExpenseCategory, Income
 from ..permissions import IsOwnerOfBudget, IsOwnerOrReadOnly
 
 
@@ -49,9 +49,14 @@ class TestIsOwnerOrReadOnlyPermission:
 class TestOwnerOfBudgetPermission:
     def test_only_owner_of_budget_can_access(self, api_rf, user1, user2):
         budget = Budget(owner=user1, name='test')
-        income = Income(budget=budget, name='income', amount='10')
+        income = Income(budget=budget, name='income', amount=10)
+        category = ExpenseCategory(name='test')
+        expense = Expense(
+            name='test', amount=10, category=category, budget=budget
+        )
         urls = (
             ('income-detail', income),
+            ('expense-detail', expense)
         )
         unsafe_methods = (
             api_rf.post,

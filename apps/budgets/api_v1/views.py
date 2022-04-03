@@ -39,7 +39,7 @@ class BudgetListCreateDestroyViewSet(
         serializer.save(owner=self.request.user)
 
 
-class CreateUpdateDestroyIncomeViewSet(
+class IncomeCreateUpdateDestroyViewSet(
     CreateModelMixin, DestroyModelMixin, 
     UpdateModelMixin, GenericViewSet
 ):

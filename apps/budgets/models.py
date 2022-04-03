@@ -25,6 +25,14 @@ class Budget(models.Model):
         related_name='budgets'
     )
 
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('Budget')
+        verbose_name_plural = _('Budgets')
+
+    def __str__(self):
+        return _('Budget "{}"').format(self.name)
+
 
 class Income(models.Model):
     id = models.UUIDField(
@@ -41,6 +49,14 @@ class Income(models.Model):
         validators=(MinValueValidator(Decimal(0)),)
     )
 
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('Income for budget')
+        verbose_name_plural = _('Incomes for budget')
+
+    def __str__(self):
+        return _('Income "{}" for {}').format(self.name, self.budget)
+
 
 class ExpenseCategory(models.Model):
     id = models.UUIDField(
@@ -49,6 +65,14 @@ class ExpenseCategory(models.Model):
     name = models.CharField(
         _('Category name'), max_length=150
     )
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('Expense category')
+        verbose_name_plural = _('Expense categories')
+
+    def __str__(self):
+        return _('Expense category: {}').format(self.name)
 
 
 class Expense(models.Model):
@@ -70,3 +94,11 @@ class Expense(models.Model):
         _('amount'), max_digits=5, decimal_places=2,
         validators=(MinValueValidator(Decimal(0)),)
     )
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('Expense')
+        verbose_name_plural = _('Expenses')
+
+    def __str__(self):
+        return _('Expense "{}" for {}').format(self.name, self.budget)

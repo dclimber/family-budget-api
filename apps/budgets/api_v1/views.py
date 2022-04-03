@@ -5,11 +5,12 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from ..models import Budget, ExpenseCategory, Income
+from ..models import Budget, Expense, ExpenseCategory, Income
 from .permissions import IsOwnerOfBudget, IsOwnerOrReadOnly
 from .serializers import (
     BudgetListOutSerializer, BudgetRetrieveCreateDeleteSerializer,
-    ExpenseCategoryCRUDSerializer, IncomeCreateDeleteUpdateSerializer,
+    ExpenseCategoryCRUDSerializer, ExpenseCRUDSerializer,
+    IncomeCreateDeleteUpdateSerializer,
 )
 
 
@@ -55,3 +56,12 @@ class ExpenseCategoryCRUDViewSet(
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     queryset = ExpenseCategory.objects.all()
     serializer_class = ExpenseCategoryCRUDSerializer
+
+
+class ExpenseCRUDViewSet(
+    CreateModelMixin, DestroyModelMixin, RetrieveModelMixin,
+    UpdateModelMixin, GenericViewSet
+):
+    permission_classes = [IsAuthenticated, IsOwnerOfBudget]
+    queryset = Expense.objects.all().select_related('budget', 'category')
+    serializer_class = ExpenseCRUDSerializer

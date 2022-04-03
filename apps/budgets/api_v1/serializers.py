@@ -78,3 +78,9 @@ class ExpenseCategoryCRUDSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'name',)
         model = ExpenseCategory
+
+
+class ExpenseCRUDSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name', 'amount', 'budget', 'category')
+        model = Expense

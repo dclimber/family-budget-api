@@ -96,7 +96,7 @@ class Expense(models.Model):
         _('Expense name'), max_length=150
     )
     amount = models.DecimalField(
-        _('amount'), max_digits=5, decimal_places=2,
+        _('amount'), max_digits=25, decimal_places=2,
         validators=(MinValueValidator(Decimal(0)),)
     )
 

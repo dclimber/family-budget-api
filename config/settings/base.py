@@ -21,6 +21,7 @@ ALLOWED_HOSTS = config(
 
 INSTALLED_APPS = [
     'apps.api',
+    'apps.budgets',
 
     'djoser',
     'drf_spectacular',

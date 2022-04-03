@@ -184,35 +184,3 @@ class TestBudgetViewSet:
                 assert Expense.objects.filter(
                     name=expense['name'], amount=expense['amount']
                 ).exists()
-
-
-class TestIncomeUpdateView:
-    def test_income_gets_updated_correctly(
-        self, user1, api_client, budget_data
-    ):
-        updated_income_data = dict(
-            name='updated income name',
-            amount = '666.00'
-        )
-        api_client.force_authenticate(user1)
-        budget = create_budget_from_budget_data(
-            user1, budget_data
-        )
-        income = budget.incomes.first()
-
-        updated_income_data['id'] = income.id
-        updated_income_data['budget'] = str(budget.id)
-
-        response = api_client.put(
-            reverse('income-detail', args=(income.id,)),
-            data=updated_income_data
-        )
-
-        assert response.status_code == HTTPStatus.OK
-        json_response = response.json()
-        assert 'id' in json_response
-        assert json_response['id'] == str(income.id)
-        assert 'name' in json_response
-        assert json_response['name'] == updated_income_data['name']
-        assert 'amount' in json_response
-        assert json_response['amount'] == updated_income_data['amount']

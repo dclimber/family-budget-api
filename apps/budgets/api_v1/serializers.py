@@ -40,3 +40,29 @@ class BudgetRetrieveCreateDeleteSerializer(serializers.ModelSerializer):
             'id', 'name', 'incomes', 'categories',
         )
         model = Budget
+
+    def create(self, validated_data):
+        incomes_data = validated_data.pop('incomes')
+        expenses_by_category = validated_data.pop('categories')
+        budget = Budget.objects.create(**validated_data)
+        incomes = [
+            Income(
+                budget=budget,
+                **income
+            ) for income in incomes_data
+        ]
+        Income.objects.bulk_create(incomes)
+        expenses = []
+        for category in expenses_by_category:
+            name = category['name']
+            category_obj, _ = ExpenseCategory.objects.get_or_create(name=name)
+            expenses += [
+                Expense(
+                    budget=budget,
+                    name=expense['name'],
+                    amount=expense['amount'],
+                    category = category_obj
+                ) for expense in category['expenses']
+            ]
+        Expense.objects.bulk_create(expenses)
+        return budget

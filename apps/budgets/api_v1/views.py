@@ -1,5 +1,5 @@
 from rest_framework.mixins import (
-    DestroyModelMixin, ListModelMixin, RetrieveModelMixin,
+    CreateModelMixin, DestroyModelMixin, ListModelMixin, RetrieveModelMixin,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -12,7 +12,7 @@ from .serializers import (
 
 
 class BudgetListCreateDestroyViewSet(
-    DestroyModelMixin, ListModelMixin, 
+    CreateModelMixin, DestroyModelMixin, ListModelMixin, 
     RetrieveModelMixin, GenericViewSet
 ):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
@@ -32,3 +32,6 @@ class BudgetListCreateDestroyViewSet(
         for category in categories:
             if not category.expenses.exists():
                 category.delete()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)

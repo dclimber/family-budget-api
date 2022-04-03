@@ -149,3 +149,37 @@ class TestBudgetViewSet:
         assert 'name' in expense
         assert 'amount' in expense
 
+    @pytest.mark.django_db()
+    def test_budget_gets_created(self, user1, api_client, budget_data):
+        api_client.force_authenticate(user1)
+
+        response = api_client.post(self.url, data=budget_data, format='json')
+
+        assert response.status_code == HTTPStatus.CREATED
+
+        assert Budget.objects.count() == 1
+        budget = Budget.objects.first()
+        assert budget.owner == user1
+        assert budget.name == budget_data['name']
+
+        assert Income.objects.count() == len(budget_data['incomes'])
+        for income in budget_data['incomes']:
+            assert Income.objects.filter(
+                name=income['name'], amount=income['amount']
+            ).exists()
+
+        assert ExpenseCategory.objects.count() == len(
+            budget_data['categories']
+        )
+        for category in budget_data['categories']:
+            assert ExpenseCategory.objects.filter(
+                name=category['name']
+            ).exists()
+
+            category_object = ExpenseCategory.objects.get(name=category['name'])
+            
+            assert category_object.expenses.count() == len(category['expenses'])
+            for expense in category['expenses']:
+                assert Expense.objects.filter(
+                    name=expense['name'], amount=expense['amount']
+                ).exists()

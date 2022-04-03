@@ -2,14 +2,36 @@ from http import HTTPStatus
 
 import pytest
 
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
-from ...models import Budget
+from ...models import Budget, Expense, ExpenseCategory, Income
 from ..views import BudgetListCreateDestroyViewSet
 
 
 class TestBudgetViewSet:
     url = reverse_lazy('budget-list')
+
+    def create_budget_from_budget_data(
+        self, user, budget_data
+    ) -> 'Budget':
+        budget = Budget.objects.create(name=budget_data['name'], owner=user)
+        incomes = [
+            Income(
+                budget=budget, name=income['name'],
+                amount=income['amount']
+            ) for income in budget_data['incomes']
+        ]
+        Income.objects.bulk_create(incomes)
+        for category in budget_data['categories']:
+            category_obj = ExpenseCategory.objects.create(name=category['name'])
+            expenses = [
+                Expense(
+                    budget=budget, category=category_obj, name=expense['name'],
+                    amount=expense['amount']
+                ) for expense in category['expenses']
+            ]
+            Expense.objects.bulk_create(expenses)
+        return budget
 
     def test_non_authenticated_users_dont_have_access(
         self, api_client
@@ -71,3 +93,23 @@ class TestBudgetViewSet:
         assert 'name' in budget
         assert 'id' in budget
         assert budget_name_prefix in budget['name']
+
+    def test_budget_gets_deleted_correctly(
+        self, api_client, user1, budget_data
+    ):
+        api_client.force_authenticate(user1)
+        budget = self.create_budget_from_budget_data(
+            user1, budget_data
+        )
+
+        response = api_client.delete(
+            reverse('budget-detail', args=(budget.id,))
+        )
+
+        assert response.status_code == HTTPStatus.NO_CONTENT
+
+        assert Budget.objects.count() == 0
+        assert Income.objects.count() == 0
+        assert Expense.objects.count() == 0
+        assert ExpenseCategory.objects.count() == 0
+

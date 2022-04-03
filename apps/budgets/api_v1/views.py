@@ -1,4 +1,6 @@
-from rest_framework.mixins import DestroyModelMixin, ListModelMixin
+from rest_framework.mixins import (
+    DestroyModelMixin, ListModelMixin, RetrieveModelMixin,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
@@ -10,7 +12,8 @@ from .serializers import (
 
 
 class BudgetListCreateDestroyViewSet(
-    DestroyModelMixin, ListModelMixin, GenericViewSet
+    DestroyModelMixin, ListModelMixin, 
+    RetrieveModelMixin, GenericViewSet
 ):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 

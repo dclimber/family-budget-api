@@ -113,3 +113,39 @@ class TestBudgetViewSet:
         assert Expense.objects.count() == 0
         assert ExpenseCategory.objects.count() == 0
 
+    @pytest.mark.django_db()
+    def test_budget_retrieve_is_in_correct_format(
+        self, user1, api_client, budget_data
+    ):
+        api_client.force_authenticate(user1)
+        budget = self.create_budget_from_budget_data(
+            user1, budget_data
+        )
+
+        response = api_client.get(
+            reverse('budget-detail', args=(budget.id,))
+        )
+
+        assert response.status_code == HTTPStatus.OK
+
+        json_response = response.json()
+        assert 'id' in json_response
+        
+        assert 'incomes' in json_response
+        assert len(json_response['incomes']) == budget.incomes.count()
+        income = json_response['incomes'][0]
+        assert 'id' in income
+        assert 'name' in income
+        assert 'amount' in income
+
+        assert 'categories' in json_response
+        category = json_response['categories'][0]
+        assert 'id' in category
+        assert 'name' in category
+        assert 'expenses' in category
+
+        expense = category['expenses'][0]
+        assert 'id' in expense
+        assert 'name' in expense
+        assert 'amount' in expense
+

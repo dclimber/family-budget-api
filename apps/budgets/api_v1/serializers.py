@@ -72,3 +72,9 @@ class IncomeCreateDeleteUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'budget', 'name', 'amount')
         model = Income
+
+
+class ExpenseCategoryCRUDSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name',)
+        model = ExpenseCategory

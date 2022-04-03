@@ -65,9 +65,20 @@ I've created the REST API backend for the application, with the aforementioned e
 
     cp .env.example .env
 
-2. Start docker-compose: `sudo docker-compose up -d`.
-3. Go to `/api/` url, you will see SwaggerUI page, where you can play with the api.
-4. Enjoy.
+2. Change `USER_NAME=` and `USER_ID=` to your Linux/Mac user's username and id.
+
+   - you can run `id` command to see the needed values.
+   - docker won't be able to launch the app without them, because the docker
+     container runs for local user, not for root user.
+
+3. Start docker-compose: `sudo docker-compose up -d`.
+4. Go to `/api/` url, you will see SwaggerUI page, where you can play with the api.
+5. Go to `/admin/` url to access django-admin, demo credentials:
+
+   - Login: `admin`;
+   - Password: `demopass123`.
+
+6. Enjoy.
 
 ## License
 

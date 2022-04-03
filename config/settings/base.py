@@ -20,6 +20,7 @@ ALLOWED_HOSTS = config(
 # Application definition
 
 INSTALLED_APPS = [
+    'apps.api',
     'rest_framework',
 
     'django.contrib.admin',

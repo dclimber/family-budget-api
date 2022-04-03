@@ -22,7 +22,7 @@ class TestLiveV1API:
     auth_header = 'AUTHORIZATION'
 
     def test_users_can_signup_and_create_budgets(
-        self, users_data, live_server, budget_data
+        self, users_data, live_server,
     ):
         # The application should allow for creating several users.
         for data in users_data:

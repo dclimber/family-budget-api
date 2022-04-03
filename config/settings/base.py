@@ -22,6 +22,7 @@ ALLOWED_HOSTS = config(
 INSTALLED_APPS = [
     'apps.api',
 
+    'djoser',
     'drf_spectacular',
     'rest_framework',
 
@@ -109,4 +110,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+JWT_AUTH_HEADER_TYPE: str = config('JWT_AUTH_HEADER_TYPE', 'Bearer')  # type: ignore
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': (JWT_AUTH_HEADER_TYPE,),
 }

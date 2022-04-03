@@ -40,8 +40,8 @@ class BudgetListCreateDestroyViewSet(
         serializer.save(owner=self.request.user)
 
 
-class IncomeCreateUpdateDestroyViewSet(
-    CreateModelMixin, DestroyModelMixin, 
+class IncomeCRUDViewSet(
+    CreateModelMixin, DestroyModelMixin, RetrieveModelMixin,
     UpdateModelMixin, GenericViewSet
 ):
     permission_classes = [IsAuthenticated, IsOwnerOfBudget]

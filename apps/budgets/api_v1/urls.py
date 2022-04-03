@@ -3,12 +3,12 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     BudgetListCreateDestroyViewSet, ExpenseCategoryCRUDViewSet,
-    ExpenseCRUDViewSet, IncomeCreateUpdateDestroyViewSet,
+    ExpenseCRUDViewSet, IncomeCRUDViewSet,
 )
 
 router = DefaultRouter()
 router.register('', BudgetListCreateDestroyViewSet, basename='budget')
-router.register('incomes', IncomeCreateUpdateDestroyViewSet, basename='income')
+router.register('incomes', IncomeCRUDViewSet, basename='income')
 router.register(
     'categories', ExpenseCategoryCRUDViewSet, basename='category'
 )

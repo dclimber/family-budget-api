@@ -125,3 +125,10 @@ JWT_AUTH_HEADER_TYPE: str = config('JWT_AUTH_HEADER_TYPE', 'Bearer')  # type: ig
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': (JWT_AUTH_HEADER_TYPE,),
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Family budget app REST API',
+    'DESCRIPTION': 'Sample family budget app',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}

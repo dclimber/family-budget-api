@@ -53,6 +53,11 @@ class Income(models.Model):
         ordering = ('name',)
         verbose_name = _('Income for budget')
         verbose_name_plural = _('Incomes for budget')
+        constraints = (
+            models.UniqueConstraint(
+                fields=['budget', 'name'], name='unique_income_for_budget'
+            ),
+        )
 
     def __str__(self):
         return _('Income "{}" for {}').format(self.name, self.budget)
@@ -99,6 +104,12 @@ class Expense(models.Model):
         ordering = ('name',)
         verbose_name = _('Expense')
         verbose_name_plural = _('Expenses')
+        constraints = (
+            models.UniqueConstraint(
+                fields=['budget', 'name', 'category'],
+                name='unique_expense_for_budget_and_category'
+            ),
+        )
 
     def __str__(self):
         return _('Expense "{}" for {}').format(self.name, self.budget)

@@ -1,0 +1,26 @@
+{
+    admin off
+}
+
+localhost {
+  tls internal
+  
+  header -Server
+
+  # Exclude matcher for Django assets
+  @excludeDirs {
+    not path /static/* /media/*
+  }
+
+  reverse_proxy @excludeDirs web:8000
+
+  file_server {
+    root /var/www/django
+  }
+
+  encode gzip
+
+  log {
+      output file /var/log/caddy-access.log
+  }
+}

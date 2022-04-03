@@ -1,0 +1,69 @@
+version: '3.7'
+
+networks:
+  default:
+    driver: bridge
+  private_network:
+    internal: true
+
+services:
+  db:
+    container_name: postgres
+    image: postgres:11.12-alpine
+    networks:
+      - private_network
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  web:
+    container_name: django
+    build:
+      context: .
+      args:
+        USER_NAME: ${USER_NAME}
+        USER_ID: ${USER_ID}
+    command: /home/$USER_NAME/djangoapp/src/scripts/django_entrypoint.sh
+    depends_on:
+      - db
+    networks:
+      - private_network
+    environment:
+      - POSTGRES_USER
+      - USER_NAME
+      - USER_ID
+    volumes:
+      - staticfiles:/home/${USER_NAME}/djangoapp/static
+      - logs:/home/${USER_NAME}/djangoapp/logs
+
+  caddy:
+    image: caddy:2.4.5
+    depends_on:
+      - web
+    restart: always
+    environment:
+      - DOMAIN_NAME
+    networks:
+      - private_network
+      - default
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./conf/caddy/Caddyfile_local:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - caddy_certs:/root/certs
+      - logs:/var/log/
+      - staticfiles:/var/www/django/static
+
+volumes:
+  postgres_data:
+  staticfiles:
+  logs:
+  caddy_data:
+  caddy_config:
+  caddy_certs:

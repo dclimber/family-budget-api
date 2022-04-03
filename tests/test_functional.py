@@ -18,6 +18,7 @@ def users_data(standart_password):
 
 
 class TestLiveV1API:
+    """Some functional tests for the app."""
     token_prefix = 'Bearer'
     auth_header = 'AUTHORIZATION'
 
@@ -57,5 +58,3 @@ class TestLiveV1API:
             assert 'email' in json_response
             assert 'id' in json_response
             assert 'username' in json_response
-
-        # and share it with any number of users.

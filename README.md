@@ -59,11 +59,19 @@ I've created the REST API backend for the application, with the aforementioned e
 - Pytest for tests;
 - Caddy as reverse proxy and static files server.
 
+## Test coverage
+
+Test coverage is 91%.
+
+![coverage.png](docs/coverage.png)
+
 ## Installation
 
 1. Rename `.env.example` to `.env`:
 
-    cp .env.example .env
+   ```shell
+   cp .env.example .env
+   ```
 
 2. Change `USER_NAME=` and `USER_ID=` to your Linux/Mac user's username and id.
 
@@ -79,6 +87,48 @@ I've created the REST API backend for the application, with the aforementioned e
    - Password: `demopass123`.
 
 6. Enjoy.
+
+## Local usage
+
+### With `poetry`
+
+1. Create virtual environment and install dependencies:
+
+   ```shell
+   poetry install
+   ```
+
+2. Activate virtual environment:
+
+   ```shell
+   poetry shell  
+   ```
+
+3. Set up environment:
+
+   ```shell
+   cp .env.example .env
+   ```
+
+4. Makemigrations and load fixtures:
+
+   ```shell
+   # devmanage.py — is manage.py that uses dev.py settings file
+   python devmanage.py migrate  
+   python devmanage.py loaddata fixtures/fixtures.json
+   ```
+
+5. Run local development server:
+
+   ```shell
+   python devmanage.py runserver
+   ```
+
+6. Run tests:
+
+   ```shell
+   pytest
+   ```
 
 ## License
 

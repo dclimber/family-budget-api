@@ -8,30 +8,31 @@ from ...models import Budget, Expense, ExpenseCategory, Income
 from ..views import BudgetListCreateDestroyViewSet
 
 
+def create_budget_from_budget_data(
+    user, budget_data
+) -> 'Budget':
+    budget = Budget.objects.create(name=budget_data['name'], owner=user)
+    incomes = [
+        Income(
+            budget=budget, name=income['name'],
+            amount=income['amount']
+        ) for income in budget_data['incomes']
+    ]
+    Income.objects.bulk_create(incomes)
+    for category in budget_data['categories']:
+        category_obj = ExpenseCategory.objects.create(name=category['name'])
+        expenses = [
+            Expense(
+                budget=budget, category=category_obj, name=expense['name'],
+                amount=expense['amount']
+            ) for expense in category['expenses']
+        ]
+        Expense.objects.bulk_create(expenses)
+    return budget
+
+
 class TestBudgetViewSet:
     url = reverse_lazy('budget-list')
-
-    def create_budget_from_budget_data(
-        self, user, budget_data
-    ) -> 'Budget':
-        budget = Budget.objects.create(name=budget_data['name'], owner=user)
-        incomes = [
-            Income(
-                budget=budget, name=income['name'],
-                amount=income['amount']
-            ) for income in budget_data['incomes']
-        ]
-        Income.objects.bulk_create(incomes)
-        for category in budget_data['categories']:
-            category_obj = ExpenseCategory.objects.create(name=category['name'])
-            expenses = [
-                Expense(
-                    budget=budget, category=category_obj, name=expense['name'],
-                    amount=expense['amount']
-                ) for expense in category['expenses']
-            ]
-            Expense.objects.bulk_create(expenses)
-        return budget
 
     def test_non_authenticated_users_dont_have_access(
         self, api_client
@@ -98,7 +99,7 @@ class TestBudgetViewSet:
         self, api_client, user1, budget_data
     ):
         api_client.force_authenticate(user1)
-        budget = self.create_budget_from_budget_data(
+        budget = create_budget_from_budget_data(
             user1, budget_data
         )
 
@@ -118,7 +119,7 @@ class TestBudgetViewSet:
         self, user1, api_client, budget_data
     ):
         api_client.force_authenticate(user1)
-        budget = self.create_budget_from_budget_data(
+        budget = create_budget_from_budget_data(
             user1, budget_data
         )
 
@@ -183,3 +184,34 @@ class TestBudgetViewSet:
                 assert Expense.objects.filter(
                     name=expense['name'], amount=expense['amount']
                 ).exists()
+
+
+class TestIncomeUpdateView:
+    def test_income_gets_updated_correctly(
+        self, user1, api_client, budget_data
+    ):
+        updated_income_data = dict(
+            name='updated income name',
+            amount = '666.00'
+        )
+        api_client.force_authenticate(user1)
+        budget = create_budget_from_budget_data(
+            user1, budget_data
+        )
+        income = budget.incomes.first()
+
+        updated_income_data['id'] = income.id
+
+        response = api_client.put(
+            reverse('update-income', args=(income.id,)),
+            data=updated_income_data
+        )
+
+        assert response.status_code == HTTPStatus.OK
+        json_response = response.json()
+        assert 'id' in json_response
+        assert json_response['id'] == str(income.id)
+        assert 'name' in json_response
+        assert json_response['name'] == updated_income_data['name']
+        assert 'amount' in json_response
+        assert json_response['amount'] == updated_income_data['amount']

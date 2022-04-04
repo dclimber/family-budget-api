@@ -80,8 +80,8 @@ Test coverage is 91%.
      container runs for local user, not for root user.
 
 3. Start docker-compose: `sudo docker-compose up -d`.
-4. Go to `/api/` url, you will see SwaggerUI page, where you can play with the api.
-5. Go to `/admin/` url to access django-admin, demo credentials:
+4. Go to `http://127.0.0.1:8000/api/` url, you will see SwaggerUI page, where you can play with the api.
+5. Go to `http://127.0.0.1:8000/admin/` url to access django-admin, demo credentials:
 
    - Login: `admin`;
    - Password: `demopass123`.
